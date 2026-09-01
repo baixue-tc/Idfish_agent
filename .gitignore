@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Environment variables
+.env
+
+# Local database / vector store
+db/
+
+# Real product data
+resources/
+
+# Logs
+*.log
+@AutomationLog.txt
+
+# Personal / temporary files
+app/test.py
+love.py
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Listener runtime data
+listener/product_images/
+listener/unknown_products/
