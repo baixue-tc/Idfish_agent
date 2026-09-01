@@ -394,41 +394,80 @@ Idlefish_agent/
 
 ---
 
-## 12. 环境配置
 
-```env
+## 12. 🚀项目运行
+
+### 13.1 环境要求
+Windows
+Python 3.12+
+uv
+MySQL 8.4+
+Memurai
+
+### 12.2 配置环境变量
+
+在项目根目录创建 .env 文件：
+
+DASHSCOPE_API_KEY=your_api_key
 DEEPSEEK_API_KEY=your_api_key
+
+DB_URL=your_database_url
 
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
-DASHSCOPE_API_KEY=your_api_key
+根据实际使用的模型和数据库配置填写对应参数。
 
-DB_URL=your_database_url
-```
+### 12.3 安装项目依赖
 
----
+进入项目根目录：
 
-## 13. 项目运行
-本项目使用 `uv` 管理 Python 依赖。
-
-安装依赖：
-
-```bash
 uv sync
-```
 
-配置 `.env` 后启动 FastAPI：
+### 12.4 初始化基础服务
 
-```bash
-python -m app.main
-```
+启动项目之前，请确保：
 
-或：
+MySQL 服务已启动
+Memurai 服务已启动
+.env 配置正确
 
-```bash
-uvicorn app.main:app --reload --port 8001
-```
+MySQL 用于持久化 LangGraph Checkpoint，Memurai 用于缓存。
+
+### 12.5 一键启动
+
+项目提供 Windows 一键启动脚本：
+
+start.bat
+
+直接双击 start.bat 即可。
+
+启动后会分别打开：
+
+FastAPI
+Listener
+
+其中：
+
+FastAPI：提供 Agent HTTP API 服务
+Listener：监听闲鱼聊天窗口并获取用户消息及商品信息
+Memurai：提供 Redis 兼容的缓存服务
+
+### 12.6 手动启动
+
+如果不使用一键启动，也可以分别运行：
+
+启动 FastAPI：
+
+uv run python app/main.py
+
+启动 Listener：
+
+uv run python -m listener.main
+
+FastAPI 默认运行：
+
+http://127.0.0.1:8001
 
 ---
 
