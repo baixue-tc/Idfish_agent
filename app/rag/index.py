@@ -66,8 +66,10 @@ class DataBase:
 
 
 db = DataBase(VECTOR_PATH,BM25_PATH,FILE_PATH)
+
 # 向量库
 vectorstore = db.create_vectorstore(documents)
+
 # bm25索引库
 metadata_corpus = [{"metadata":doc.metadata,"content":doc.page_content} for doc in documents]
 bm25_retriever = db.create_bm25_index(metadata_corpus)

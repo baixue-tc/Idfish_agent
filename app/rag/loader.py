@@ -34,7 +34,7 @@ def prepare_document(filepath):
                 continue
 
         # 售后
-        if len(after_sales) == 2 :
+        if len(after_sales) == 3 :
             for data in product_data:
                 content = []
                 content.append(f"商品名称{product_name}")

@@ -1,3 +1,6 @@
+from common.logger import setup_logging
+# 初始化日志
+setup_logging()
 from contextlib import asynccontextmanager
 import logging
 import os
@@ -11,12 +14,12 @@ from agent.graph import create_idlefish_graph
 from langchain.messages import HumanMessage
 from agent.context import IdlefishContext
 import uvicorn
-from common.logger import setup_logging
+
 
 load_dotenv()
+
+
 logger = logging.getLogger(__name__)
-# 初始化日志
-setup_logging()
 
 DB_URI = os.getenv("DB_URL")
 
@@ -45,7 +48,7 @@ async def chat(request:Request,chat_request:ChatRequest):
     logger.info(f"================用户消息:{query}===================")
     graph = request.app.state.graph
     context = IdlefishContext(product_id = chat_request.product_id,user_id = chat_request.user_id)
-    config = {"configurable":{"thread_id":chat_request.user_id}}
+    config = {"configurable":{"thread_id":f"{chat_request.user_id}_{chat_request.product_id}"}}
     response = await graph.ainvoke({"messages":[HumanMessage(query)]},context = context,config = config)
     logger.info(f"================商家回复:{response['messages'][-1].content}===================")
     return  ChatResponse(message = response["messages"][-1].content,user_id = chat_request.user_id,product_id = chat_request.product_id)

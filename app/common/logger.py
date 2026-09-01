@@ -7,5 +7,6 @@ def setup_logging():
                         format=LOG_FORMAT,
                         handlers = [logging.StreamHandler(sys.stdout),# 输出到控制台
                                     # logging.FileHandler("app.log"),# 如果需要存文件,可以开启
-                            ]
+                            ],
+                        force = True
                         )
