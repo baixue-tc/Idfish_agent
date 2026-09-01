@@ -53,4 +53,4 @@ async def chat(request:Request,chat_request:ChatRequest):
 
 
 if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8001,reload=True)
+    uvicorn.run(app, host="127.0.0.1", port=8001,reload=False)
