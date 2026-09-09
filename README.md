@@ -23,6 +23,7 @@
 * Redis 缓存
 * MySQL 持久化
 * FastAPI 服务
+* Docker 容器化部署
 
 结合起来，实现一个具有自主决策能力的智能客服系统。
 
@@ -329,7 +330,41 @@ Listener / Client
 
 ---
 
-## 10. 技术栈
+## 10. Docker 部署
+
+项目已完成 Docker 化，并使用 Docker Compose 管理 Agent、MySQL 和 Redis 等服务。
+
+整体结构：
+
+                 Docker Compose
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+        ▼              ▼              ▼
+     Agent           MySQL          Redis
+        │
+        ├── FastAPI
+        ├── LangGraph
+        ├── RAG
+        ├── Chroma
+        ├── BM25
+        └── Cross Encoder
+
+Agent 容器支持 NVIDIA GPU，用于 Cross Encoder Reranker 推理。
+
+当前 Docker 环境已经完成：
+
+FastAPI 服务容器化
+MySQL 容器化
+Redis 容器化
+RAG 知识库持久化
+GPU 推理支持
+Docker Compose 多容器管理
+Swagger API 测试验证
+
+---
+
+## 11. 技术栈
 
 | 技术            | 用途                  |
 | ------------- | ------------------- |
@@ -345,10 +380,12 @@ Listener / Client
 | Cross Encoder | 检索结果重排序             |
 | Embedding     | 文本向量化               |
 | UI Automation | 闲鱼消息监听              |
+| Docker        | 应用容器化               |
+| Docker Compose| 多容器服务编排            |
 
 ---
 
-## 11. 项目结构
+## 12. 项目结构
 
 ```text
 Idlefish_agent/
@@ -391,11 +428,9 @@ Idlefish_agent/
 ├── pyproject.toml
 └── uv.lock
 ```
-
 ---
 
-
-## 12. 🚀项目运行
+## 13. 🚀项目运行
 
 ### 13.1 环境要求
 Windows
@@ -404,7 +439,7 @@ uv
 MySQL 8.4+
 Memurai
 
-### 12.2 配置环境变量
+### 13.2 配置环境变量
 
 在项目根目录创建 .env 文件：
 
@@ -418,13 +453,13 @@ REDIS_PORT=6379
 
 根据实际使用的模型和数据库配置填写对应参数。
 
-### 12.3 安装项目依赖
+### 13.3 安装项目依赖
 
 进入项目根目录：
 
 uv sync
 
-### 12.4 初始化基础服务
+### 13.4 初始化基础服务
 
 启动项目之前，请确保：
 
@@ -434,7 +469,7 @@ Memurai 服务已启动
 
 MySQL 用于持久化 LangGraph Checkpoint，Memurai 用于缓存。
 
-### 12.5 一键启动
+### 13.5 一键启动
 
 项目提供 Windows 一键启动脚本：
 
@@ -453,7 +488,7 @@ FastAPI：提供 Agent HTTP API 服务
 Listener：监听闲鱼聊天窗口并获取用户消息及商品信息
 Memurai：提供 Redis 兼容的缓存服务
 
-### 12.6 手动启动
+### 13.6 手动启动
 
 如果不使用一键启动，也可以分别运行：
 
@@ -470,7 +505,93 @@ FastAPI 默认运行：
 http://127.0.0.1:8001
 
 ---
+## 14. Docker Compose 部署
+如果使用 Docker，可以通过 Docker Compose 启动 Agent、MySQL 和 Redis。
 
+### 14.1 环境要求
+Windows / Linux
+Docker
+Docker Compose
+NVIDIA GPU（如果需要使用 GPU Reranker）
+
+### 14.2 配置环境变量
+
+在项目根目录创建 .env：
+
+DASHSCOPE_API_KEY=your_api_key
+DEEPSEEK_API_KEY=your_api_key
+
+DB_URL=your_database_url
+HOST=127.0.0.1
+REDIS_PORT=6379
+
+不要将真实 API Key 提交到 GitHub。
+
+### 14.3 构建并启动
+
+在项目根目录执行：
+
+docker compose up -d --build
+
+查看运行状态：
+
+docker compose ps
+
+查看 Agent 日志：
+
+docker compose logs -f agent
+### 14.4 访问 API
+
+Docker 启动成功后：
+
+http://127.0.0.1:8001/docs
+
+即可进入 Swagger 页面测试 API。
+
+### 14.5 停止服务
+docker compose down
+
+停止服务但保留 Docker Volume 中的数据。
+
+如果需要删除 Compose 创建的 Volume：
+
+docker compose down -v
+
+-v 会删除 MySQL / Redis 等持久化 Volume，执行前请确认不再需要其中的数据。
+
+---
+
+## 15. 数据持久化
+
+项目中的数据持久化分为两部分。
+
+### 15.1 Agent 状态
+
+MySQL：
+
+LangGraph Checkpoint
+        ↓
+      MySQL
+
+用于保存 Agent 执行过程中的状态。
+
+### 15.2 RAG 知识库
+
+项目使用 db/ 保存 Chroma 和 BM25 索引：
+
+db/
+├── chroma_stroe/
+├── bm25_index/
+├── vector_version.json
+└── bm25_version.json
+
+Docker Compose 通过 Volume 将宿主机的 db/ 挂载到容器：
+
+./db
+  ↓
+/app/db
+
+因此容器重启后不会丢失已有知识库索引。
 ## 13. 个人贡献
 
 本项目为个人独立开发项目，主要负责：
@@ -484,15 +605,20 @@ http://127.0.0.1:8001
 - 使用 MySQL 实现 LangGraph Checkpoint 持久化
 - 使用 FastAPI 封装 Agent 服务接口
 - 实现基于 UI Automation 的闲鱼消息监听及商品信息匹配
+- 使用 Docker Compose 完成 Agent、MySQL、Redis 容器化部署
+- 配置 NVIDIA GPU Runtime，使 Reranker 能够在容器中使用 GPU 推理
 
 ---
 
+
 ## 14. 后续计划
 
-* 增加售后板块
-* 增加产品优惠板块
+* 增加售后处理流程
+* 增加产品优惠策略
 * 完善异常处理与日志系统
-* 增加人工对接方式
-* 添加图片识别模型
+* 完善人工介入流程
+* 增加图片识别能力
+* 进一步优化 Agent 决策及工具调用流程
+* 完善线上部署及监控能力
 
 
