@@ -41,7 +41,7 @@ def cross_encoder(query,docs:List[dict],top_k:int = 3 ):
     for i,s in enumerate(scores):
         docs[i]['score'] = s
     sorted_docs = sorted(docs,key = lambda x : x['score'],reverse = True)
-    positive_docs = [doc for doc in sorted_docs if doc['score'] > 0 ]
+    positive_docs = [doc for doc in sorted_docs if doc['score'] > 4 ]
     return positive_docs[:min(top_k,len(positive_docs))]
 
 

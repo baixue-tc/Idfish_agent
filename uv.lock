@@ -977,11 +977,15 @@ dependencies = [
     { name = "pkuseg" },
     { name = "pydantic" },
     { name = "python-dotenv" },
-    { name = "ragas" },
     { name = "redis" },
     { name = "sentence-transformers" },
     { name = "torch" },
     { name = "uiautomation" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ragas" },
 ]
 
 [package.metadata]
@@ -1003,12 +1007,14 @@ requires-dist = [
     { name = "pkuseg", specifier = ">=0.0.25" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
-    { name = "ragas", specifier = ">=0.4.3" },
     { name = "redis", specifier = ">=8.1.0" },
     { name = "sentence-transformers", specifier = ">=5.7.0" },
     { name = "torch", specifier = ">=2.11.0", index = "https://download.pytorch.org/whl/cu128" },
     { name = "uiautomation", specifier = ">=2.0.29" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ragas", specifier = ">=0.4.3" }]
 
 [[package]]
 name = "idna"

@@ -20,11 +20,14 @@ dependencies = [
     "pkuseg>=0.0.25",
     "pydantic>=2.13.4",
     "python-dotenv>=1.2.2",
-    "ragas>=0.4.3",
     "redis>=8.1.0",
     "sentence-transformers>=5.7.0",
     "torch>=2.11.0",
     "uiautomation>=2.0.29",
+]
+[dependency-groups]
+dev = [
+    "ragas>=0.4.3",
 ]
 
 [tool.uv.extra-build-dependencies]

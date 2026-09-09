@@ -46,7 +46,7 @@ class DataBase:
         else:
             logger.info("正在加载向量库...")
         return self.vectorstore
-
+ 
     def create_bm25_index(self,metadata_corpus,k1:float = 1.5,b:float = 0.75):
         """创建bm25索引库"""
         if index_is_latest(self.file_path,BM25_VERSION_PATH):

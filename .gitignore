@@ -23,7 +23,6 @@ resources/
 @AutomationLog.txt
 
 # Personal / temporary files
-app/test.py
 love.py
 *.ipynb
 
@@ -34,3 +33,4 @@ Thumbs.db
 # Listener runtime data
 listener/product_images/
 listener/unknown_products/
+
